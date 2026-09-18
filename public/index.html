@@ -105,8 +105,16 @@ textarea {
 .btn-group { display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
 
 /* ── SKU 查询 ── */
-.search-form { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-form { display: flex; gap: 10px; margin-bottom: 12px; }
 .search-form input { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; }
+.search-options { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+.search-option-group { display: flex; align-items: center; gap: 8px; }
+.search-option-label { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.search-option-hint { font-size: 11px; color: var(--text-3); font-family: var(--mono); }
+.zip-input {
+  padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 16px; font-size: 12px;
+  font-family: var(--mono); width: 110px;
+}
 .result-item {
   display: flex; padding: 10px 12px; background: var(--bg); border-radius: 6px;
   border-left: 3px solid var(--blue); margin-bottom: 8px;
@@ -157,9 +165,9 @@ textarea {
 .ii-scope .result-title { color: var(--text-2); font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ii-scope .result-time { font-size: 11px; color: var(--text-3); }
 
-.ii-scope .columns { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 14px; align-items: start; }
-@media (max-width: 1400px) { .ii-scope .columns { grid-template-columns: 1fr 1fr; } .ii-scope .col-info { grid-column: 1 / -1; } }
-@media (max-width: 900px) { .ii-scope .columns { grid-template-columns: 1fr; } }
+.ii-scope .ii-info-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: start; margin-bottom: 12px; }
+.ii-scope .ii-info-row .ii-card { margin-bottom: 0; }
+@media (max-width: 900px) { .ii-scope .ii-info-row { grid-template-columns: 1fr; } }
 
 .ii-scope .ii-card {
   background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
@@ -207,7 +215,6 @@ textarea {
 .ii-scope .mini-table tr:hover td { background: #fafbff; }
 .ii-scope .mini-table td.price { color: var(--red); font-weight: 700; }
 .ii-scope .mini-table td.muted { color: var(--text-3); }
-
 .ii-scope .pdp-hero { padding: 18px 16px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); }
 .ii-scope .pdp-price-block { flex: 1; }
 .ii-scope .pdp-price-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
@@ -218,11 +225,7 @@ textarea {
 .ii-scope .pdp-salable-text { font-size: 13px; font-weight: 700; }
 .ii-scope .pdp-salable-text.green { color: var(--green); }
 .ii-scope .pdp-salable-text.red { color: var(--red); }
-.ii-scope .pdp-reason { font-size: 11px; color: var(--text-3); padding: 8px 16px; background: var(--red-light); border-bottom: 1px solid var(--border); line-height: 1.5; }
-.ii-scope .pdp-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
-.ii-scope .pdp-extra-cell { background: var(--surface); padding: 10px 14px; }
-.ii-scope .pdp-extra-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
-.ii-scope .pdp-extra-val { font-size: 13px; font-weight: 600; color: var(--text); }
+.ii-scope .pdp-reason { font-size: 12px; color: var(--red); padding: 10px 16px; background: var(--red-light); border-radius: var(--radius-sm); line-height: 1.6; margin-bottom: 12px; }
 
 .ii-scope .logic-chain { padding: 12px 16px; display: flex; flex-direction: column; gap: 0; }
 .ii-scope .logic-step { display: flex; gap: 12px; position: relative; padding-bottom: 16px; }
@@ -255,30 +258,6 @@ textarea {
 .ii-scope .step-conclusion.warn { background: var(--yellow-light); color: var(--yellow); }
 .ii-scope .step-conclusion.skip { color: var(--text-3); }
 
-.ii-scope .redis-fields { padding: 0; }
-.ii-scope .redis-field { border-bottom: 1px solid #f3f4f6; padding: 10px 16px; }
-.ii-scope .redis-field:last-child { border-bottom: none; }
-.ii-scope .redis-field-name { font-family: var(--mono); font-size: 11px; color: var(--purple); font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
-.ii-scope .redis-field-name span { color: var(--text-3); font-weight: 400; }
-.ii-scope .redis-seg { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; background: #f9fafb; margin-top: 4px; font-size: 11px; }
-.ii-scope .redis-seg.active { background: var(--yellow-light); border-left: 3px solid var(--yellow); }
-.ii-scope .redis-seg-type { font-weight: 700; min-width: 48px; }
-.ii-scope .redis-seg-price { color: var(--red); font-weight: 700; font-size: 12px; }
-.ii-scope .redis-seg-time { color: var(--text-3); font-size: 10px; flex: 1; }
-.ii-scope .redis-seg-act { color: var(--yellow); font-weight: 700; font-size: 10px; }
-
-.ii-scope .collapsible summary {
-  cursor: pointer; user-select: none; padding: 10px 16px; font-size: 12px; font-weight: 700;
-  color: var(--text-2); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 6px; list-style: none;
-}
-.ii-scope .collapsible summary::-webkit-details-marker { display: none; }
-.ii-scope .collapsible summary::before { content: '▶'; font-size: 9px; transition: transform .15s; }
-.ii-scope .collapsible[open] summary::before { transform: rotate(90deg); }
-.ii-scope .detail-body { overflow-x: auto; }
-.ii-scope .ii-code-block {
-  font-family: var(--mono); font-size: 11px; color: var(--text-2); background: #f9fafb; white-space: pre-wrap;
-  word-break: break-all; padding: 12px 16px; max-height: 260px; overflow-y: auto; line-height: 1.6;
-}
 </style>
 </head>
 <body>
@@ -382,8 +361,21 @@ textarea {
       <div class="card">
         <div class="search-form">
           <input id="skuInput" type="text" placeholder="请输入 10 位商品编号 (Item Number)" maxlength="10" inputmode="numeric" autocomplete="off">
-          <input id="zipcodeInput" type="text" placeholder="Zipcode（可选）" maxlength="10" autocomplete="off" style="flex:0 0 160px">
           <button class="btn" id="btnSearch">查询</button>
+        </div>
+        <div class="search-options">
+          <div class="search-option-group">
+            <span class="search-option-label">站点</span>
+            <div class="env-group" id="siteGroup"></div>
+          </div>
+          <div class="search-option-group">
+            <span class="search-option-label">仓库</span>
+            <div class="env-group" id="warehouseGroup"></div>
+          </div>
+          <div class="search-option-group">
+            <span class="search-option-label">zipcode</span>
+            <input id="zipcodeInput" type="text" class="zip-input" placeholder="zipcode" autocomplete="off">
+          </div>
         </div>
       </div>
       <div id="skuResult" class="ii-scope"></div>
@@ -510,6 +502,66 @@ document.getElementById('btnCopyJson').addEventListener('click', () => {
 });
 
 // ─── 商品信息查询（移植自 item-inspector）──────────────────────
+// 仓库按钮只是"预填 zipcode"的快捷方式，真正查询时以 zipcode 输入框里的实际值为准，
+// 可以在预填后手动改。US 站点 001 西仓默认 91789，002 东仓默认 04001；
+// CA 站点只有 101 仓，默认 L3R 7T4。
+const WAREHOUSE_ZIP_BY_SITE = {
+  us: { '001': '91789', '002': '04001' },
+  ca: { '101': 'L3R 7T4' },
+};
+const WAREHOUSE_LABELS_BY_SITE = {
+  us: { '001': '西仓 001', '002': '东仓 002' },
+  ca: { '101': '101 仓' },
+};
+const SITE_LABELS = { us: 'US', ca: 'CA' };
+
+let selectedSite = localStorage.getItem('tools.siteCode') || 'us';
+let selectedWarehouse = Object.keys(WAREHOUSE_ZIP_BY_SITE[selectedSite])[0];
+
+function fillZipcodeFromWarehouse() {
+  document.getElementById('zipcodeInput').value = WAREHOUSE_ZIP_BY_SITE[selectedSite][selectedWarehouse];
+}
+
+function renderWarehouseButtons() {
+  const group = document.getElementById('warehouseGroup');
+  group.innerHTML = '';
+  const labels = WAREHOUSE_LABELS_BY_SITE[selectedSite];
+  Object.keys(labels).forEach(wh => {
+    const btn = document.createElement('button');
+    btn.className = 'env-btn' + (wh === selectedWarehouse ? ' active' : '');
+    btn.textContent = labels[wh];
+    btn.addEventListener('click', () => {
+      selectedWarehouse = wh;
+      renderWarehouseButtons();
+      fillZipcodeFromWarehouse();
+    });
+    group.appendChild(btn);
+  });
+}
+
+function renderSiteButtons() {
+  const group = document.getElementById('siteGroup');
+  group.innerHTML = '';
+  Object.keys(SITE_LABELS).forEach(site => {
+    const btn = document.createElement('button');
+    btn.className = 'env-btn' + (site === selectedSite ? ' active' : '');
+    btn.textContent = SITE_LABELS[site];
+    btn.addEventListener('click', () => {
+      selectedSite = site;
+      localStorage.setItem('tools.siteCode', site);
+      selectedWarehouse = Object.keys(WAREHOUSE_ZIP_BY_SITE[site])[0];
+      renderSiteButtons();
+      renderWarehouseButtons();
+      fillZipcodeFromWarehouse();
+    });
+    group.appendChild(btn);
+  });
+}
+
+renderSiteButtons();
+renderWarehouseButtons();
+fillZipcodeFromWarehouse();
+
 document.getElementById('btnSearch').addEventListener('click', doQuery);
 document.getElementById('skuInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') doQuery(); });
 document.getElementById('zipcodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') doQuery(); });
@@ -523,8 +575,7 @@ async function doQuery() {
   if (!itemNumber) return showToast('请输入商品编号');
   if (!/^\d{10}$/.test(itemNumber)) return showToast('商品编号必须是 10 位数字');
 
-  const zipcodeHint = zipcode ? ` · zipcode: ${iiEsc(zipcode)}` : '';
-  wrap.innerHTML = `<div class="page-loading"><div class="spinner"></div><div>正在查询 ${ENV_LABELS[currentEnv]} · ${iiEsc(itemNumber)}${zipcodeHint} …</div></div>`;
+  wrap.innerHTML = `<div class="page-loading"><div class="spinner"></div><div>正在查询 ${ENV_LABELS[currentEnv]} · ${SITE_LABELS[selectedSite]} · ${iiEsc(itemNumber)} · zipcode ${iiEsc(zipcode || '(空)')} …</div></div>`;
   btn.disabled = true;
   btn.textContent = '查询中…';
 
@@ -532,7 +583,7 @@ async function doQuery() {
     const res = await fetch('/api/query', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ env: currentEnv, item_number: itemNumber, zipcode: zipcode || '' }),
+      body: JSON.stringify({ env: currentEnv, item_number: itemNumber, zipcode, site_code: selectedSite }),
     });
     const data = await res.json();
     if (data.error) {
@@ -548,14 +599,17 @@ async function doQuery() {
   }
 }
 
-// ══ 主渲染 ══
+// ══ 主渲染：查询结果分四部分 ══
+// 1. 查询输入框（HTML 里固定，不在这里渲染）
+// 2. 商品基础信息（基础信息 / 价格 / 库存）
+// 3. PDP 结论（展示价格 + 是否可售）
+// 4. PDP 价格来源与可售性说明（价格取自哪个字段/区域，不可售时给出原因）
 function iiRenderResult(wrap, data) {
   const db = data.db || {};
-  const priceCache = data.redis_price_cache;
-  const itemCache  = data.redis_item_cache;
   const p   = db.db_price || {};
   const inv = db.inventory || {};
   const pdp = db.pdp || {};
+  const ep  = pdp.effective_price || p; // 经区域覆盖 + 时间校验后的生效价格
   const now = Math.floor(Date.now() / 1000);
 
   if (db.error) {
@@ -571,19 +625,18 @@ function iiRenderResult(wrap, data) {
       <span class="ii-badge ii-badge-${envCls}">${data.env.toUpperCase()}</span>
       <span class="result-time">${data.queried_at ? data.queried_at.replace('T',' ').slice(0,19) : ''}</span>
     </div>
-    <div class="columns">
   `;
 
-  // ── 列 1：基础信息 ──
-  html += `<div class="col-info">`;
+  // ── 第二部分（前半）：基础信息，始终展示，用于先判断可售性 ──
   html += `<div class="ii-card">
     <div class="ii-card-head">
       <span class="ii-card-head-icon">📦</span>
-      <span class="ii-card-head-title">商品基础信息</span>
+      <span class="ii-card-head-title">基础信息</span>
       <span class="ii-badge ii-badge-blue">im_item</span>
     </div>
     <div class="kv-list">
       ${iiKv('status',      iiStatusBadge(db.status))}
+      ${iiKv('所属区域',    iiAreaKv(db.zipcode_query))}
       ${iiKv('seller_id',   db.seller_id  ?? '—')}
       ${iiKv('site_code',   db.site_code  || '—')}
       ${iiKv('goods_id',    db.goods_id   || '—')}
@@ -592,137 +645,100 @@ function iiRenderResult(wrap, data) {
     </div>
   </div>`;
 
-  const promoActive = iiIsPromoActive(p, now);
-  const memberActive = iiIsMemberActive(p, now);
-  html += `<div class="ii-card">
-    <div class="ii-card-head">
-      <span class="ii-card-head-icon">💰</span>
-      <span class="ii-card-head-title">全国价格</span>
-      <span class="ii-badge ii-badge-blue">im_item_price_setting</span>
-    </div>
-    <div class="kv-list">
-      ${iiKv('unit_price',       iiPrice$(p.unit_price))}
-      ${iiKv('promotion_price',  iiPrice$(p.promotion_price) + ' ' + (promoActive ? iiBadge('生效中','orange') : '') + (p.promote_start_date ? `<div class="kv-sub">${iiFmtTs(p.promote_start_date)} ~ ${iiFmtTs(p.promote_end_date)}</div>` : ''))}
-      ${iiKv('is_promotion',     p.is_promotion === 'Y' ? iiBadge('Y','green') : iiBadge('N','gray'))}
-      ${iiKv('seckill_price',    iiPrice$(p.seckill_price) + ' ' + iiSeckillBadge(p.seckill_status) + (p.seckill_start_time ? `<div class="kv-sub">${iiFmtTs(p.seckill_start_time)} ~ ${iiFmtTs(p.seckill_end_time)}</div>` : ''))}
-      ${iiKv('member_price',     iiPrice$(p.member_price)  + ' ' + (memberActive ? iiBadge('生效中','purple') : '') + (p.member_start_time ? `<div class="kv-sub">${iiFmtTs(p.member_start_time)} ~ ${iiFmtTs(p.member_end_time)}</div>` : ''))}
-      ${iiKv('giftcard_price',   iiPrice$(p.giftcard_price) + ' ' + (p.giftcard_status === 1 ? iiBadge('生效','blue') : ''))}
-      ${iiKv('limit_quantity',   p.limit_quantity != null ? (p.limit_quantity === 0 ? `0 <span style="color:var(--text-3);font-size:11px;">不限购</span>` : String(p.limit_quantity)) : '—')}
-    </div>
-  </div>`;
-
-  html += `<div class="ii-card">
-    <div class="ii-card-head">
-      <span class="ii-card-head-icon">🏭</span>
-      <span class="ii-card-head-title">库存</span>
-      <span class="ii-badge ii-badge-blue">inventory_transaction</span>
-    </div>
-    <div class="inv-row">
-      <div class="inv-block">
-        <div class="inv-big ${inv.total_available_qty > 0 ? '' : 'warn'}">${inv.total_available_qty ?? '—'}</div>
-        <div class="inv-sub">available_qty</div>
-      </div>
-      <div class="inv-block">
-        <div class="inv-big warn">${inv.total_reserved_qty ?? '—'}</div>
-        <div class="inv-sub">reserved_qty</div>
-      </div>
-    </div>
-    ${iiRenderWarehouseTable(inv.by_warehouse)}
-  </div>`;
-  html += `</div>`; // end col-info
-
-  // ── 列 2：PDP 结论 ──
-  html += `<div class="col-pdp">`;
+  // ── 先判断可售性：不可售就到此为止，后面的价格/库存/推导链分析没有意义 ──
   const salable = pdp.is_salable;
+  if (!salable) {
+    html += `<div class="ii-card">
+      <div class="ii-card-head">
+        <span class="ii-card-head-icon">🖥️</span>
+        <span class="ii-card-head-title">PDP 结论</span>
+        <span class="ii-badge ii-badge-red">❌ 不可售</span>
+      </div>
+      <div class="pdp-reason" style="margin:16px;">⚠️ 不可售原因：${iiEsc(pdp.unsalable_reason || '未知')}</div>
+    </div>`;
+    wrap.innerHTML = html;
+    return;
+  }
+
+  // ── 第二部分（后半）：价格（生效价）/ 库存，只有可售时才值得看 ──
+  const promoActive = iiIsPromoActive(ep, now);
+  const memberActive = iiIsMemberActive(ep, now);
+  html += `<div class="ii-info-row" style="grid-template-columns: 1fr 1fr;">
+    <div class="ii-card">
+      <div class="ii-card-head">
+        <span class="ii-card-head-icon">💰</span>
+        <span class="ii-card-head-title">价格（生效价）</span>
+        ${pdp.area_used
+          ? `<span class="ii-badge ii-badge-purple">区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))}</span>`
+          : `<span class="ii-badge ii-badge-blue">全国</span>`}
+      </div>
+      <div class="kv-list">
+        ${iiKv('unit_price',       iiPrice$(ep.unit_price))}
+        ${iiKv('promotion_price',  iiPrice$(ep.promotion_price) + ' ' + (promoActive ? iiBadge('生效中','orange') : '') + (ep.promote_start_date ? `<div class="kv-sub">${iiFmtTs(ep.promote_start_date)} ~ ${iiFmtTs(ep.promote_end_date)}</div>` : ''))}
+        ${iiKv('is_promotion',     ep.is_promotion === 'Y' ? iiBadge('Y','green') : iiBadge('N','gray'))}
+        ${iiKv('seckill_price',    iiPrice$(ep.seckill_price) + ' ' + iiSeckillBadge(ep.seckill_status) + (ep.seckill_start_time ? `<div class="kv-sub">${iiFmtTs(ep.seckill_start_time)} ~ ${iiFmtTs(ep.seckill_end_time)}</div>` : ''))}
+        ${iiKv('member_price',     iiPrice$(ep.member_price)  + ' ' + (memberActive ? iiBadge('生效中','purple') : '') + (ep.member_start_time ? `<div class="kv-sub">${iiFmtTs(ep.member_start_time)} ~ ${iiFmtTs(ep.member_end_time)}</div>` : ''))}
+        ${iiKv('giftcard_price',   iiPrice$(ep.giftcard_price) + ' ' + (ep.giftcard_status === 1 ? iiBadge('生效','blue') : ''))}
+        ${iiKv('limit_quantity',   ep.limit_quantity != null ? (ep.limit_quantity === 0 ? `0 <span style="color:var(--text-3);font-size:11px;">不限购</span>` : String(ep.limit_quantity)) : '—')}
+      </div>
+    </div>
+
+    <div class="ii-card">
+      <div class="ii-card-head">
+        <span class="ii-card-head-icon">🏭</span>
+        <span class="ii-card-head-title">库存</span>
+        <span class="ii-badge ii-badge-blue">inventory_transaction</span>
+      </div>
+      <div class="inv-row">
+        <div class="inv-block">
+          <div class="inv-big ${inv.total_available_qty > 0 ? '' : 'warn'}">${inv.total_available_qty ?? '—'}</div>
+          <div class="inv-sub">available_qty</div>
+        </div>
+        <div class="inv-block">
+          <div class="inv-big warn">${inv.total_reserved_qty ?? '—'}</div>
+          <div class="inv-sub">reserved_qty</div>
+        </div>
+      </div>
+      ${iiRenderWarehouseTable(inv.by_warehouse)}
+    </div>
+  </div>`;
+
+  // ── 第三部分：PDP 结论（展示价格 + 是否可售）──
   html += `<div class="ii-card">
     <div class="ii-card-head">
       <span class="ii-card-head-icon">🖥️</span>
       <span class="ii-card-head-title">PDP 结论</span>
-      ${salable ? '<span class="ii-badge ii-badge-green">✅ 可售</span>' : '<span class="ii-badge ii-badge-red">❌ 不可售</span>'}
+      <span class="ii-badge ii-badge-green">✅ 可售</span>
     </div>
     <div class="pdp-hero">
       <div class="pdp-price-block">
         <div class="pdp-price-label">PDP 展示价格${pdp.area_used ? `（区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))}）` : '（全国）'}</div>
         <div class="pdp-price-val">${pdp.pdp_price != null ? '$' + iiEsc(String(pdp.pdp_price)) : '—'}</div>
-        <div class="pdp-price-source">来源字段: ${iiEsc(pdp.pdp_price_source || '—')}${pdp.area_used ? ` <span style="color:var(--purple);font-weight:700;">[区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))}]</span>` : ' <span style="color:var(--text-3);">[全国]</span>'}</div>
       </div>
       <div class="pdp-salable-block">
-        <div class="pdp-salable-icon">${salable ? '✅' : '❌'}</div>
-        <div class="pdp-salable-text ${salable ? 'green' : 'red'}">${salable ? '可售' : '不可售'}</div>
-      </div>
-    </div>
-    ${pdp.unsalable_reason ? `<div class="pdp-reason">⚠️ ${iiEsc(pdp.unsalable_reason)}</div>` : ''}
-    <div class="pdp-extra">
-      <div class="pdp-extra-cell">
-        <div class="pdp-extra-label">item_type</div>
-        <div class="pdp-extra-val">${pdp.item_type ?? '—'} <span style="color:var(--text-3);font-size:11px;font-weight:400;">${iiEsc(pdp.item_type_label || '')}</span></div>
-      </div>
-      <div class="pdp-extra-cell">
-        <div class="pdp-extra-label">促销</div>
-        <div class="pdp-extra-val">${pdp.promo_active ? iiBadge('生效中','orange') : iiBadge('未生效','gray')}</div>
-      </div>
-      <div class="pdp-extra-cell">
-        <div class="pdp-extra-label">秒杀</div>
-        <div class="pdp-extra-val">${pdp.seckill_active ? iiBadge('进行中','red') : iiBadge('未生效','gray')}</div>
-      </div>
-      <div class="pdp-extra-cell">
-        <div class="pdp-extra-label">会员价</div>
-        <div class="pdp-extra-val">${pdp.member_active
-          ? iiBadge('$' + iiEsc(String(pdp.member_price_display ?? '')) + ' 生效中', 'purple')
-          : (pdp.member_price_display ? `$${iiEsc(String(pdp.member_price_display))} <span style="color:var(--text-3);font-size:11px;">未生效</span>` : iiBadge('无','gray'))}</div>
+        <div class="pdp-salable-icon">✅</div>
+        <div class="pdp-salable-text green">可售</div>
       </div>
     </div>
   </div>`;
 
-  if (db.local_prices && db.local_prices.length > 0) {
-    html += `<div class="ii-card">
-      <div class="ii-card-head">
-        <span class="ii-card-head-icon">🗺️</span>
-        <span class="ii-card-head-title">区域价格</span>
-        <span class="ii-badge ii-badge-blue">im_item_area_price_setting</span>
-      </div>
-      <div style="overflow-x:auto;">${iiRenderLocalPriceTable(db.local_prices, now)}</div>
-    </div>`;
-  }
-
-  html += `<div class="ii-card">
-    <div class="ii-card-head">
-      <span class="ii-card-head-icon">⚡</span>
-      <span class="ii-card-head-title">Redis 价格缓存</span>
-      <span class="ii-badge ii-badge-orange">promotion:price:${iiEsc(db.item_number)}</span>
-      ${iiCacheStatusBadge(priceCache)}
-    </div>
-    ${iiRenderRedisPriceCache(priceCache, db.local_prices)}
-  </div>`;
-  html += `</div>`; // end col-pdp
-
-  // ── 列 3：PDP 逻辑推导链 ──
-  html += `<div class="col-logic">`;
+  // ── 第四部分：PDP 价格来源与可售性说明 ──
   html += `<div class="ii-card">
     <div class="ii-card-head">
       <span class="ii-card-head-icon">🔗</span>
-      <span class="ii-card-head-title">PDP 价格推导链</span>
+      <span class="ii-card-head-title">价格来源与可售性说明</span>
       <span class="ii-card-head-sub">ItemController.php 逻辑</span>
+    </div>
+    <div style="padding:12px 16px 0;">
+      <div class="pdp-price-source" style="font-size:12px;">
+        来源字段: <strong>${iiEsc(pdp.pdp_price_source || '—')}</strong>
+        ${pdp.area_used ? ` <span style="color:var(--purple);font-weight:700;">[区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))} · ${iiEsc(pdp.area_rule_name||'')}]</span>` : ' <span style="color:var(--text-3);">[全国价]</span>'}
+      </div>
     </div>
     <div class="logic-chain">
       ${iiRenderPdpLogicChain(db, p, pdp, inv, now)}
     </div>
   </div>`;
-
-  html += `<div class="ii-card">
-    <div class="ii-card-head">
-      <span class="ii-card-head-icon">💾</span>
-      <span class="ii-card-head-title">Redis 商品缓存</span>
-      <span class="ii-badge ii-badge-orange">IM_ITEMS:${iiEsc(db.item_number)}:zh_CN</span>
-      ${iiCacheStatusBadge(itemCache)}
-    </div>
-    <details class="collapsible">
-      <summary>展开查看缓存关键字段</summary>
-      <div class="detail-body">${iiRenderItemCachePreview(itemCache)}</div>
-    </details>
-  </div>`;
-  html += `</div>`; // end col-logic
-  html += `</div>`; // end columns
 
   wrap.innerHTML = html;
 }
@@ -889,76 +905,6 @@ function iiRenderWarehouseTable(rows) {
   </div>`;
 }
 
-function iiRenderLocalPriceTable(rows, now) {
-  if (!rows || !rows.length) return '<div class="empty-hint">无区域价格配置</div>';
-  return `<table class="mini-table">
-    <thead><tr><th>rule</th><th>unit</th><th>促销价</th><th>秒杀价</th><th>会员价</th><th>礼卡价</th></tr></thead>
-    <tbody>${rows.map(r => {
-      const promoOn = r.is_promotion === 'Y' && r.promote_start_date && r.promote_end_date
-        && now >= r.promote_start_date && now <= r.promote_end_date && Number(r.promotion_price) > 0;
-      const skStatus = r.seckill_status;
-      const skOn = skStatus === 2 && r.seckill_start_time && r.seckill_end_time && now >= r.seckill_start_time && now <= r.seckill_end_time;
-      const skAny = skStatus && skStatus !== 0 && skStatus !== 4;
-      const memberOn = r.member_status === 1 && r.member_start_time && r.member_end_time && now >= r.member_start_time && now <= r.member_end_time;
-      return `<tr>
-        <td style="font-family:var(--mono);font-size:11px;">${iiEsc(String(r.rule_id||''))}<br><span style="color:var(--text-3);font-size:10px;">${iiEsc(r.rule_name||'—')}</span></td>
-        <td class="price">${r.unit_price != null ? '$'+r.unit_price : '—'}</td>
-        <td class="${promoOn ? 'price' : 'muted'}">${r.promotion_price != null ? '$'+r.promotion_price : '—'}${promoOn ? ' ✓' : ''}</td>
-        <td class="${skOn ? 'price' : (skAny ? '' : 'muted')}">${r.seckill_price != null ? '$'+r.seckill_price : '—'}${skOn ? ' ✓' : (skAny ? ` <span style="color:var(--text-3);font-size:10px;">(s=${skStatus})</span>` : '')}</td>
-        <td class="${memberOn ? '' : 'muted'}" style="${memberOn ? 'color:var(--purple);' : ''}">${r.member_price != null ? '$'+r.member_price : '—'}${memberOn ? ' ✓' : ''}</td>
-        <td class="muted">${r.giftcard_price != null ? '$'+r.giftcard_price : '—'}</td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table>`;
-}
-
-function iiRenderRedisPriceCache(cache, localPrices) {
-  if (!cache) return '<div class="empty-hint">缓存未命中</div>';
-  if (cache.error) return `<div style="padding:10px 16px;color:var(--red);font-size:12px;">${iiEsc(cache.error)}</div>`;
-  const entries = Object.entries(cache);
-  if (!entries.length) return '<div class="empty-hint">缓存为空</div>';
-  const ruleMap = {};
-  if (localPrices) localPrices.forEach(r => { ruleMap[String(r.rule_id)] = r.rule_name || ''; });
-  return `<div class="redis-fields">${entries.map(([field, rawJson]) => {
-    const ruleName = field === '0' ? '全国' : (ruleMap[field] || '');
-    let segs = [];
-    try { segs = JSON.parse(rawJson); } catch {}
-    if (!Array.isArray(segs)) { try { const o = JSON.parse(rawJson); segs = o.priceSegments || o.segments || [o]; } catch {} }
-    const now2 = Math.floor(Date.now()/1000);
-    return `<div class="redis-field">
-      <div class="redis-field-name">field: ${iiEsc(field)} <span>rule_id=${iiEsc(field)}${ruleName ? ' · '+iiEsc(ruleName) : ''}</span></div>
-      ${segs.length === 0 ? '<div style="font-size:11px;color:var(--text-3);padding:2px 0;">无段数据</div>' : segs.map(seg => {
-        const type = String(seg.priceType || seg.price_type || seg.type || '');
-        const typeMap = {'1':'promotion','2':'seckill','3':'member','4':'giftcard','promotion':'promotion','seckill':'seckill','member':'member','giftcard':'giftcard'};
-        const typeCls = typeMap[type] || '';
-        const typeLabel = {promotion:'促销',seckill:'秒杀',member:'会员价',giftcard:'礼卡'}[typeCls] || type || '?';
-        const typeColor = {promotion:'var(--orange)',seckill:'var(--red)',member:'var(--purple)',giftcard:'var(--blue)'}[typeCls] || 'var(--text-2)';
-        const price = seg.price || seg.promotionPrice || seg.seckillPrice || seg.memberPrice || seg.giftcardPrice;
-        const start = seg.startTime || seg.start_time;
-        const end = seg.endTime || seg.end_time;
-        const active = start && end && now2 >= start && now2 <= end;
-        return `<div class="redis-seg ${active ? 'active' : ''}">
-          <span class="redis-seg-type" style="color:${typeColor};">${typeLabel}</span>
-          ${price != null ? `<span class="redis-seg-price">$${iiEsc(String(price))}</span>` : ''}
-          ${start ? `<span class="redis-seg-time">${iiFmtTs(start)} ~ ${iiFmtTs(end)}</span>` : ''}
-          ${active ? '<span class="redis-seg-act">▶ 生效</span>' : ''}
-        </div>`;
-      }).join('')}
-    </div>`;
-  }).join('')}</div>`;
-}
-
-function iiRenderItemCachePreview(cache) {
-  if (!cache) return '<div class="empty-hint">缓存未命中</div>';
-  if (cache.error) return `<div style="padding:10px 16px;color:var(--red);font-size:12px;">${iiEsc(cache.error)}</div>`;
-  const keyFields = ['item_number','item_title','status','unit_price','market_price','promotion_price','is_promotion','seckill_status','seckill_price','member_price','giftcard_price','limit_quantity','is_instock','act_type','goods_number','seller_id','seller_type','brand_id','category_id'];
-  const preview = {};
-  const src = (typeof cache === 'object' && cache.itemInfo) ? cache.itemInfo : cache;
-  keyFields.forEach(k => { if (src[k] !== undefined) preview[k] = src[k]; });
-  const str = Object.keys(preview).length ? JSON.stringify(preview, null, 2) : JSON.stringify(cache, null, 2).substring(0, 2000);
-  return `<div class="ii-code-block">${iiEsc(str)}</div>`;
-}
-
 // ══ 工具函数 ══
 function iiEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function iiPrice$(v) {
@@ -972,6 +918,14 @@ function iiBadge(text, color) {
 function iiKv(key, valHtml) {
   return `<div class="kv-row"><div class="kv-key">${iiEsc(key)}</div><div class="kv-val">${valHtml}</div></div>`;
 }
+function iiAreaKv(zq) {
+  if (!zq) return `<span style="color:var(--text-3);font-style:italic;">未填写 zipcode</span>`;
+  if (zq.not_found) return `<span style="color:var(--text-3);">zipcode ${iiEsc(zq.zipcode)} 未命中任何区域规则，使用全国价</span>`;
+  if (!zq.area_price_found) {
+    return `${iiBadge('rule_id=' + zq.rule_id, 'gray')} <span style="color:var(--text-3);font-size:11px;">${iiEsc(zq.rule_name || '')} · 该商品无对应区域价配置，使用全国价</span>`;
+  }
+  return `${iiBadge('rule_id=' + zq.rule_id, 'purple')} <span style="font-weight:600;">${iiEsc(zq.rule_name || '')}</span>`;
+}
 function iiStatusBadge(s) {
   const map = { A: ['green','上架'], D: ['red','下架'], H: ['orange','隐藏'], R: ['red','删除'] };
   const [color, label] = map[s] || ['gray', s || '?'];
@@ -982,11 +936,6 @@ function iiSeckillBadge(s) {
   const map = { 1: ['yellow','预热'], 2: ['red','进行中'], 3: ['gray','已抢光'], 4: ['gray','已结束'] };
   const [c, l] = map[s] || ['gray', String(s)];
   return iiBadge(l, c);
-}
-function iiCacheStatusBadge(cache) {
-  if (!cache) return '<span class="ii-badge ii-badge-gray">未命中</span>';
-  if (cache.error) return '<span class="ii-badge ii-badge-red">查询失败</span>';
-  return '<span class="ii-badge ii-badge-green">已命中</span>';
 }
 function iiFmtTs(ts) {
   if (!ts) return '—';

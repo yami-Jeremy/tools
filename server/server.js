@@ -48,7 +48,7 @@ app.get('/api/envs', (req, res) => {
 
 // ─── API: 商品信息查询（DB + Redis 价格/商品缓存）─────────────────
 app.post('/api/query', async (req, res) => {
-  const { env, item_number, zipcode } = req.body;
+  const { env, item_number, zipcode, site_code } = req.body;
 
   if (!env || !item_number) {
     return res.status(400).json({ error: '缺少 env 或 item_number 参数' });
@@ -59,6 +59,7 @@ app.post('/api/query', async (req, res) => {
   if (!/^\d{10}$/.test(String(item_number).trim())) {
     return res.status(400).json({ error: 'item_number 格式错误，应为 10 位数字' });
   }
+  const siteCode = ['us', 'ca'].includes(site_code) ? site_code : 'us';
 
   const cfg = dbEnvironments[env];
   const itemNum = String(item_number).trim();
@@ -67,7 +68,7 @@ app.post('/api/query', async (req, res) => {
 
   try {
     const [dbResult, redisPriceCache, redisItemCache] = await Promise.allSettled([
-      queryItemBasicInfo(cfg.mysql, itemNum, zipcodeClean || undefined),
+      queryItemBasicInfo(cfg.mysql, itemNum, zipcodeClean || undefined, siteCode),
       queryRedisPriceCache(cfg.redis, itemNum),
       queryRedisItemCache(cfg.redis, itemNum),
     ]);
@@ -75,6 +76,7 @@ app.post('/api/query', async (req, res) => {
     res.json({
       env,
       item_number: itemNum,
+      site_code: siteCode,
       zipcode: zipcodeClean || null,
       db: dbResult.status === 'fulfilled' ? dbResult.value : { error: dbResult.reason?.message },
       redis_price_cache: redisPriceCache.status === 'fulfilled' ? redisPriceCache.value : { error: redisPriceCache.reason?.message },

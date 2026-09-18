@@ -29,7 +29,15 @@ async function _getIdpToken(cfg) {
     'Cookie': `google-refresh-token=${googleRefreshToken}`,
   });
 
-  const json = JSON.parse(data);
+  let json;
+  try {
+    json = JSON.parse(data);
+  } catch {
+    throw new Error(`IDP 登录响应不是合法 JSON（REDIS_PRD_GOOGLE_REFRESH_TOKEN 可能无效或已过期），响应: ${data.slice(0, 200)}`);
+  }
+  if (!json.backstageIdentity || !json.backstageIdentity.token) {
+    throw new Error('IDP 登录失败：未返回 token，请检查 .env 中 REDIS_PRD_GOOGLE_REFRESH_TOKEN 是否有效');
+  }
   _idpToken = json.backstageIdentity.token;
   const expiresIn = (json.backstageIdentity.expiresInSeconds || 3600) - 60;
   _idpTokenExpiresAt = Date.now() + expiresIn * 1000;
@@ -97,7 +105,7 @@ async function _idpRedisQuery(cfg, redisUrl, key) {
         try {
           resolve(JSON.parse(body));
         } catch {
-          resolve({ error: body });
+          reject(new Error(`IDP redis-proxy 请求失败 (status=${res.statusCode})：${body ? body.slice(0, 200) : '空响应'}`));
         }
       });
     });
@@ -228,7 +236,8 @@ function _parseResp(data) {
 async function redisGet(redisCfg, redisServiceUrl, key) {
   if (redisCfg.type === 'idp') {
     const result = await _idpRedisQuery(redisCfg, redisServiceUrl, key);
-    return result.value !== undefined ? result.value : result;
+    if (result && result.error) throw new Error(result.error);
+    return result.value !== undefined ? result.value : null;
   }
   return _directRedisCommand(redisCfg.host, redisCfg.port, redisCfg.tls, 'GET', key);
 }
@@ -240,6 +249,7 @@ async function redisHGet(redisCfg, redisServiceUrl, key, field) {
   if (redisCfg.type === 'idp') {
     // IDP 模式下查 hash，先 GET 整个 key（IDP API 支持），然后取 field
     const result = await _idpRedisQuery(redisCfg, redisServiceUrl, key);
+    if (result && result.error) throw new Error(result.error);
     if (result && result.value && typeof result.value === 'object') {
       return result.value[field] || null;
     }
@@ -254,6 +264,7 @@ async function redisHGet(redisCfg, redisServiceUrl, key, field) {
 async function redisHGetAll(redisCfg, redisServiceUrl, key) {
   if (redisCfg.type === 'idp') {
     const result = await _idpRedisQuery(redisCfg, redisServiceUrl, key);
+    if (result && result.error) throw new Error(result.error);
     if (result && result.value) {
       return typeof result.value === 'object' ? result.value : JSON.parse(result.value);
     }

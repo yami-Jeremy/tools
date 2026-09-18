@@ -49,12 +49,13 @@ function getPool(mysqlCfg) {
  *   - item_type=2 取 promotion_price；item_type=3 且 status=2/3 取 seckill_price；否则 unit_price
  *   - PHP ItemController::index 额外规则：促销剩余 >72h → item_type 降为1（直降价）
  *
- * @param {object} item      im_item 行
+ * @param {object} item      im_item 行（含 im_item_extend.share_inventory）
  * @param {object} price     im_item_price_setting 行（全国价，platform_code=B2C, channel_code=Computer）
  * @param {number} totalAvailableQty
  * @param {object|null} areaRow   命中的区域价格行（im_item_area_price_setting），null 表示取全国
+ * @param {boolean} zipcodeProvided 是否传入了 zipcode（用于双仓商品的仓库覆盖范围判断）
  */
-function calcPdpInfo(item, price, totalAvailableQty, areaRow) {
+function calcPdpInfo(item, price, totalAvailableQty, areaRow, zipcodeProvided) {
   const now = Math.floor(Date.now() / 1000);
 
   // ── Step 1: setAreaPrice —— 区域覆盖全国字段（对应 Java setAreaPrice()）
@@ -174,9 +175,15 @@ function calcPdpInfo(item, price, totalAvailableQty, areaRow) {
   // ── 可售判断 ──
   const inStock = totalAvailableQty > 0;
   const isListed = item.status === 'A';
-  const isSalable = isListed && inStock;
+  // 双仓（非共享库存）商品：库存按仓库拆分，若传入的 zipcode 不在该商品任何一个仓库覆盖区域
+  // （即在 im_item_area_price_setting 里配置了区域价的 rule_id）内，说明没有仓库能配送到这个
+  // 地址，此时不管全部仓库加总库存多少都应判定不可售（对应 share_inventory=0 时后端按仓库覆盖
+  // 范围过滤可配送仓库的逻辑）。share_inventory=1（共享库存）的商品不受此限制。
+  const noWarehouseCoverage = zipcodeProvided && !areaRow && item.share_inventory === 0;
+  const isSalable = isListed && inStock && !noWarehouseCoverage;
   let unsalableReason = null;
   if (!isListed) unsalableReason = `商品状态: ${item.status}（非上架）`;
+  else if (noWarehouseCoverage) unsalableReason = `该 zipcode 不在此商品任何仓库覆盖范围内（双仓商品 share_inventory=0，非共享库存，无仓库可配送到该地址）`;
   else if (!inStock) unsalableReason = `库存不足（available_qty=0）`;
 
   // 会员价生效判断（已在 effectivePrice 里做了时间校验，直接看 member_price 是否非空）
@@ -242,9 +249,11 @@ function calcPdpInfo(item, price, totalAvailableQty, areaRow) {
  * @param {object} mysqlCfg
  * @param {string} itemNumber
  * @param {string} [zipcode]  可选，传入 zipcode 时模拟前端 JS 的区域价格覆盖
+ * @param {string} [siteCode] 站点编码（us/ca），item_number 理论上可能在不同站点重复使用，默认 us
  */
-async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode) {
+async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode, siteCode) {
   const pool = getPool(mysqlCfg);
+  const site = siteCode || 'us';
 
   // 1. 商品基础（im_item + im_item_extend）
   const [itemRows] = await pool.query(
@@ -260,10 +269,10 @@ async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode) {
        ext.share_inventory
      FROM Yamibuy_IM.im_item i
      LEFT JOIN Yamibuy_IM.im_item_extend ext ON ext.item_number = i.item_number
-     WHERE i.item_number = ?`,
-    [itemNumber]
+     WHERE i.item_number = ? AND i.site_code = ?`,
+    [itemNumber, site]
   );
-  if (!itemRows.length) return { error: `商品 ${itemNumber} 不存在` };
+  if (!itemRows.length) return { error: `商品 ${itemNumber} 在 ${site} 站点不存在` };
   const item = itemRows[0];
 
   // 2. 中文标题
@@ -319,19 +328,25 @@ async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode) {
     [itemNumber]
   );
 
-  // 5. zipcode → rule_id（模拟前端 JS 行为）
+  // 5. zipcode → rule_id
+  // 注意：一个 zipcode 往往同时命中几十个 xysc_shop_district_zipcode 规则（销售范围/配送范围/
+  // 各种测试区域等互不相关的规则都可能覆盖同一个 zipcode），不能不加过滤地 LIMIT 1 随便取一个，
+  // 否则会命中跟当前商品毫无关系的规则，导致明明有区域促销价却被判定为"无区域覆盖"。
+  // 真正有意义的只有该商品自己配置了区域价的那些 rule_id，所以直接把候选范围限定在
+  // im_item_area_price_setting 已有的 rule_id 集合内再去匹配 zipcode。
   let zipcodeRuleId = null;
   let zipcodeRuleName = null;
   let zipcodeNotFound = false;
-  if (zipcode) {
+  if (zipcode && localPriceRows.length) {
     try {
+      const candidateRuleIds = localPriceRows.map(r => r.rule_id);
       const [zcRows] = await pool.query(
         `SELECT z.rule_id, r.rule_name
          FROM Yamibuy_Master.xysc_shop_district_zipcode z
          LEFT JOIN Yamibuy_Master.xysc_shop_district_rule r ON r.rule_id = z.rule_id AND r.status = 1
-         WHERE z.zipcode = ?
+         WHERE z.zipcode = ? AND z.rule_id IN (?)
          LIMIT 1`,
-        [zipcode.toString()]
+        [zipcode.toString(), candidateRuleIds]
       );
       if (zcRows.length) {
         zipcodeRuleId   = zcRows[0].rule_id;
@@ -343,6 +358,9 @@ async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode) {
       // 查不到 zipcode 表时忽略
       zipcodeNotFound = true;
     }
+  } else if (zipcode) {
+    // 商品本身没有任何区域价配置，直接判定为无区域覆盖
+    zipcodeNotFound = true;
   }
 
   // 6. 命中的区域价格行
@@ -374,7 +392,7 @@ async function queryItemBasicInfo(mysqlCfg, itemNumber, zipcode) {
   }
 
   // 8. PDP 计算（区域优先）
-  const pdpInfo = calcPdpInfo(item, price, totalAvailableQty, areaRow);
+  const pdpInfo = calcPdpInfo(item, price, totalAvailableQty, areaRow, !!zipcode);
 
   return {
     goods_id:   item.goods_id,
