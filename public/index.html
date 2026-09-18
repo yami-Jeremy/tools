@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>工具集合</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f4f6fa;
+  --surface: #fff;
+  --border: #e8eaf0;
+  --text: #1a1d2e;
+  --text-2: #6b7280;
+  --text-3: #9ca3af;
+  --blue: #4f46e5;
+  --blue-light: #eef2ff;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --orange: #ea580c;
+  --orange-light: #fff7ed;
+  --purple: #7c3aed;
+  --purple-light: #f5f3ff;
+  --yellow: #d97706;
+  --yellow-light: #fffbeb;
+  --mono: "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+}
+.app { display: flex; min-height: 100vh; }
+
+/* ── 侧边栏 ── */
+.sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar h1 { font-size: 16px; font-weight: 800; margin-bottom: 20px; padding: 0 6px; }
+
+.env-block { margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.env-block h3 { font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 8px; padding: 0 6px; }
+.env-group { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 6px; }
+.env-btn {
+  padding: 5px 12px; border-radius: 16px; border: 1.5px solid var(--border);
+  background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700;
+  color: var(--text-2); transition: all .15s;
+}
+.env-btn:hover { border-color: var(--blue); color: var(--blue); }
+.env-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.env-btn.prd.active { background: var(--red); border-color: var(--red); }
+
+.nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  padding: 9px 10px; border-radius: 8px; color: var(--text); text-decoration: none;
+  font-size: 13px; cursor: pointer; border: none; background: none; text-align: left; width: 100%;
+}
+.nav-item:hover { background: var(--bg); }
+.nav-item.active { background: var(--blue); color: #fff; }
+
+/* ── 内容区 ── */
+.content { flex: 1; padding: 32px; max-width: 900px; }
+.view { display: none; }
+.view.active { display: block; }
+h2 { font-size: 20px; margin-bottom: 20px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px;
+}
+
+/* ── 时间戳 ── */
+.ts-row { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
+.ts-value { font-family: var(--mono); font-size: 16px; width: 220px; }
+.ts-input { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; width: 220px; font-size: 13px; }
+.ts-result { font-family: var(--mono); font-size: 15px; margin-left: 6px; }
+
+button.btn {
+  padding: 8px 16px; border: none; border-radius: 6px; background: var(--blue); color: #fff;
+  cursor: pointer; font-size: 13px; font-weight: 600; transition: background .15s;
+}
+button.btn:hover { background: #4338ca; }
+button.btn.secondary { background: #6b7280; }
+button.btn.secondary:hover { background: #4b5563; }
+button.btn.danger { background: var(--red); }
+button.btn.danger:hover { background: #b91c1c; }
+
+/* ── JSON 工具 ── */
+textarea {
+  width: 100%; min-height: 200px; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: var(--mono); font-size: 13px; line-height: 1.5; resize: vertical;
+}
+.btn-group { display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
+
+/* ── SKU 查询 ── */
+.search-form { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-form input { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; }
+.result-item {
+  display: flex; padding: 10px 12px; background: var(--bg); border-radius: 6px;
+  border-left: 3px solid var(--blue); margin-bottom: 8px;
+}
+.result-item .k { font-weight: 600; color: var(--text-2); min-width: 100px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 16px;
+  font-size: 12px; font-weight: 700; margin-bottom: 16px;
+}
+.badge.ok { background: var(--green-light); color: var(--green); }
+.badge.err { background: var(--red-light); color: var(--red); }
+.alert { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; }
+.alert.error { background: var(--red-light); color: var(--red); }
+
+/* ── SQL 示例 ── */
+.sql-example { margin-bottom: 18px; }
+.sql-example h3 { font-size: 14px; color: var(--blue); margin-bottom: 8px; }
+.code-block {
+  background: #1f2530; color: #e2e8f0; padding: 14px; border-radius: 8px;
+  font-family: var(--mono); font-size: 13px; overflow-x: auto;
+}
+
+.toast {
+  position: fixed; top: 20px; right: 20px; background: #1a1d2e; color: #fff; padding: 10px 18px;
+  border-radius: 8px; font-size: 13px; z-index: 1000; opacity: 0; transform: translateY(-12px);
+  transition: all .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── 商品信息查询（item-inspector 移植）── */
+.ii-scope .page-loading {
+  min-height: 200px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; color: var(--text-2);
+}
+.ii-scope .spinner {
+  width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--blue);
+  border-radius: 50%; animation: ii-spin .7s linear infinite;
+}
+@keyframes ii-spin { to { transform: rotate(360deg); } }
+.ii-scope .ii-error-alert {
+  padding: 14px 16px; background: var(--red-light); border-radius: var(--radius-sm);
+  color: var(--red); font-size: 13px; margin: 12px 0; display: flex; gap: 8px; align-items: flex-start;
+}
+.ii-scope .empty-hint { text-align: center; padding: 24px; color: var(--text-3); font-size: 13px; }
+
+.ii-scope .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.ii-scope .result-item-num { font-family: var(--mono); font-size: 18px; font-weight: 800; color: var(--text); }
+.ii-scope .result-title { color: var(--text-2); font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ii-scope .result-time { font-size: 11px; color: var(--text-3); }
+
+.ii-scope .columns { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 14px; align-items: start; }
+@media (max-width: 1400px) { .ii-scope .columns { grid-template-columns: 1fr 1fr; } .ii-scope .col-info { grid-column: 1 / -1; } }
+@media (max-width: 900px) { .ii-scope .columns { grid-template-columns: 1fr; } }
+
+.ii-scope .ii-card {
+  background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); overflow: hidden; margin-bottom: 12px;
+}
+.ii-scope .ii-card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.ii-scope .ii-card-head-icon { font-size: 15px; line-height: 1; }
+.ii-scope .ii-card-head-title { font-size: 13px; font-weight: 700; color: var(--text); flex: 1; }
+.ii-scope .ii-card-head-sub { font-size: 11px; color: var(--text-3); }
+
+.ii-scope .ii-badge {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 20px;
+}
+.ii-scope .ii-badge-blue { background: var(--blue-light); color: var(--blue); }
+.ii-scope .ii-badge-green { background: var(--green-light); color: var(--green); }
+.ii-scope .ii-badge-red { background: var(--red-light); color: var(--red); }
+.ii-scope .ii-badge-orange { background: var(--orange-light); color: var(--orange); }
+.ii-scope .ii-badge-purple { background: var(--purple-light); color: var(--purple); }
+.ii-scope .ii-badge-gray { background: #f3f4f6; color: var(--text-2); }
+.ii-scope .ii-badge-yellow { background: var(--yellow-light); color: var(--yellow); }
+
+.ii-scope .kv-list { padding: 4px 0; }
+.ii-scope .kv-row { display: flex; align-items: baseline; gap: 8px; padding: 7px 16px; border-bottom: 1px solid #f9fafb; }
+.ii-scope .kv-row:last-child { border-bottom: none; }
+.ii-scope .kv-row:hover { background: #fafbff; }
+.ii-scope .kv-key { font-family: var(--mono); font-size: 11px; color: var(--text-3); width: 130px; flex-shrink: 0; }
+.ii-scope .kv-val { font-size: 13px; font-weight: 600; color: var(--text); word-break: break-all; }
+.ii-scope .kv-sub { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+.ii-scope .inv-row { display: flex; border-bottom: 1px solid var(--border); }
+.ii-scope .inv-block { flex: 1; padding: 14px 16px; border-right: 1px solid var(--border); }
+.ii-scope .inv-block:last-child { border-right: none; }
+.ii-scope .inv-big { font-size: 22px; font-weight: 800; color: var(--green); }
+.ii-scope .inv-big.warn { color: var(--orange); }
+.ii-scope .inv-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.ii-scope .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ii-scope .mini-table th {
+  background: #f9fafb; padding: 7px 12px; text-align: left; font-weight: 700; color: var(--text-2);
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.ii-scope .mini-table td { padding: 6px 12px; border-bottom: 1px solid #f3f4f6; color: var(--text); }
+.ii-scope .mini-table tr:last-child td { border-bottom: none; }
+.ii-scope .mini-table tr:hover td { background: #fafbff; }
+.ii-scope .mini-table td.price { color: var(--red); font-weight: 700; }
+.ii-scope .mini-table td.muted { color: var(--text-3); }
+
+.ii-scope .pdp-hero { padding: 18px 16px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); }
+.ii-scope .pdp-price-block { flex: 1; }
+.ii-scope .pdp-price-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+.ii-scope .pdp-price-val { font-size: 32px; font-weight: 800; color: var(--red); letter-spacing: -1px; line-height: 1; }
+.ii-scope .pdp-price-source { font-size: 11px; color: var(--text-3); margin-top: 4px; font-family: var(--mono); }
+.ii-scope .pdp-salable-block { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ii-scope .pdp-salable-icon { font-size: 32px; line-height: 1; }
+.ii-scope .pdp-salable-text { font-size: 13px; font-weight: 700; }
+.ii-scope .pdp-salable-text.green { color: var(--green); }
+.ii-scope .pdp-salable-text.red { color: var(--red); }
+.ii-scope .pdp-reason { font-size: 11px; color: var(--text-3); padding: 8px 16px; background: var(--red-light); border-bottom: 1px solid var(--border); line-height: 1.5; }
+.ii-scope .pdp-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+.ii-scope .pdp-extra-cell { background: var(--surface); padding: 10px 14px; }
+.ii-scope .pdp-extra-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+.ii-scope .pdp-extra-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+.ii-scope .logic-chain { padding: 12px 16px; display: flex; flex-direction: column; gap: 0; }
+.ii-scope .logic-step { display: flex; gap: 12px; position: relative; padding-bottom: 16px; }
+.ii-scope .logic-step:last-child { padding-bottom: 0; }
+.ii-scope .logic-step::before { content: ''; position: absolute; left: 12px; top: 26px; bottom: 0; width: 2px; background: var(--border); }
+.ii-scope .logic-step:last-child::before { display: none; }
+.ii-scope .step-dot {
+  width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0; position: relative; z-index: 1;
+}
+.ii-scope .step-dot.pass { background: var(--green-light); color: var(--green); }
+.ii-scope .step-dot.fail { background: #f3f4f6; color: var(--text-3); }
+.ii-scope .step-dot.warn { background: var(--yellow-light); color: var(--yellow); }
+.ii-scope .step-dot.active { background: var(--blue-light); color: var(--blue); }
+.ii-scope .step-dot.hit { background: var(--red-light); color: var(--red); }
+.ii-scope .step-body { flex: 1; min-width: 0; }
+.ii-scope .step-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; min-height: 26px; }
+.ii-scope .step-data {
+  background: #f9fafb; border-radius: var(--radius-sm); padding: 7px 10px; font-family: var(--mono);
+  font-size: 11px; color: var(--text-2); line-height: 1.7; margin-bottom: 4px; white-space: pre-wrap;
+}
+.ii-scope .step-data .key { color: var(--blue); }
+.ii-scope .step-data .val { color: var(--text); font-weight: 700; }
+.ii-scope .step-data .val.hit { color: var(--red); }
+.ii-scope .step-data .val.ok { color: var(--green); }
+.ii-scope .step-data .val.muted { color: var(--text-3); font-weight: 400; }
+.ii-scope .step-conclusion { font-size: 11px; color: var(--text-2); padding: 4px 8px; border-radius: 4px; background: #f3f4f6; display: inline-block; line-height: 1.5; }
+.ii-scope .step-conclusion.hit { background: var(--red-light); color: var(--red); font-weight: 700; }
+.ii-scope .step-conclusion.ok { background: var(--green-light); color: var(--green); }
+.ii-scope .step-conclusion.warn { background: var(--yellow-light); color: var(--yellow); }
+.ii-scope .step-conclusion.skip { color: var(--text-3); }
+
+.ii-scope .redis-fields { padding: 0; }
+.ii-scope .redis-field { border-bottom: 1px solid #f3f4f6; padding: 10px 16px; }
+.ii-scope .redis-field:last-child { border-bottom: none; }
+.ii-scope .redis-field-name { font-family: var(--mono); font-size: 11px; color: var(--purple); font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+.ii-scope .redis-field-name span { color: var(--text-3); font-weight: 400; }
+.ii-scope .redis-seg { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; background: #f9fafb; margin-top: 4px; font-size: 11px; }
+.ii-scope .redis-seg.active { background: var(--yellow-light); border-left: 3px solid var(--yellow); }
+.ii-scope .redis-seg-type { font-weight: 700; min-width: 48px; }
+.ii-scope .redis-seg-price { color: var(--red); font-weight: 700; font-size: 12px; }
+.ii-scope .redis-seg-time { color: var(--text-3); font-size: 10px; flex: 1; }
+.ii-scope .redis-seg-act { color: var(--yellow); font-weight: 700; font-size: 10px; }
+
+.ii-scope .collapsible summary {
+  cursor: pointer; user-select: none; padding: 10px 16px; font-size: 12px; font-weight: 700;
+  color: var(--text-2); border-top: 1px solid var(--border); display: flex; align-items: center; gap: 6px; list-style: none;
+}
+.ii-scope .collapsible summary::-webkit-details-marker { display: none; }
+.ii-scope .collapsible summary::before { content: '▶'; font-size: 9px; transition: transform .15s; }
+.ii-scope .collapsible[open] summary::before { transform: rotate(90deg); }
+.ii-scope .detail-body { overflow-x: auto; }
+.ii-scope .ii-code-block {
+  font-family: var(--mono); font-size: 11px; color: var(--text-2); background: #f9fafb; white-space: pre-wrap;
+  word-break: break-all; padding: 12px 16px; max-height: 260px; overflow-y: auto; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <h1>工具集合</h1>
+
+    <div class="env-block">
+      <h3>数据库环境</h3>
+      <div class="env-group" id="envGroup"></div>
+    </div>
+
+    <nav class="nav" id="navGroup">
+      <button class="nav-item" data-view="home">首页</button>
+      <button class="nav-item" data-view="timestamp">时间戳转换</button>
+      <button class="nav-item" data-view="json">JSON格式化</button>
+      <button class="nav-item" data-view="docs">业务文档</button>
+      <button class="nav-item" data-view="database">数据库文档</button>
+      <button class="nav-item" data-view="im_detail">商品信息查询</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <section class="view" id="view-home">
+      <h2>hello</h2>
+    </section>
+
+    <section class="view" id="view-timestamp">
+      <h2>时间戳转换</h2>
+      <div class="card">
+        <div class="ts-row">
+          <span class="ts-value" id="tsNow">-</span>
+          <button class="btn secondary" id="btnCopyTs">复制</button>
+        </div>
+        <div class="ts-row">
+          <span class="ts-value" id="tsNowDate">-</span>
+          <button class="btn secondary" id="btnCopyDt">复制</button>
+        </div>
+        <div class="ts-row" style="margin-top:30px">
+          <input class="ts-input" id="tsInput" type="number" placeholder="请输入时间戳">
+          <button class="btn" id="btnToDate">转成日期</button>
+          <span class="ts-result" id="tsToDateResult"></span>
+        </div>
+        <div class="ts-row">
+          <input class="ts-input" id="dateInput" type="text" placeholder="格式: 2025-05-17 06:57:09">
+          <button class="btn" id="btnToTs">转时间戳</button>
+          <span class="ts-result" id="dateToTsResult"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-json">
+      <h2>JSON格式化工具</h2>
+      <div class="card">
+        <label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text-2)">输入JSON文本：</label>
+        <textarea id="jsonInput" placeholder="请输入要格式化的JSON文本..."></textarea>
+        <div class="btn-group">
+          <button class="btn" id="btnFormat">格式化</button>
+          <button class="btn secondary" id="btnCompress">压缩</button>
+          <button class="btn danger" id="btnClear">清空</button>
+        </div>
+        <div id="jsonOutputWrap" style="display:none">
+          <label style="display:block;margin-bottom:8px;font-weight:600;color:var(--text-2)">处理结果：</label>
+          <textarea id="jsonOutput" readonly></textarea>
+          <div class="btn-group">
+            <button class="btn secondary" id="btnCopyJson">复制结果</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-docs">
+      <h2>业务文档</h2>
+    </section>
+
+    <section class="view" id="view-database">
+      <h2>数据库文档</h2>
+      <div class="card">
+        <div class="sql-example">
+          <h3>1. INSERT</h3>
+          <div class="code-block">INSERT INTO users (name, email, age) VALUES ('张三', 'zhangsan@example.com', 25);</div>
+        </div>
+        <div class="sql-example">
+          <h3>2. SELECT</h3>
+          <div class="code-block">SELECT name, email FROM users WHERE age > 20 ORDER BY age DESC;</div>
+        </div>
+        <div class="sql-example">
+          <h3>3. UPDATE</h3>
+          <div class="code-block">UPDATE users SET age = 26, email = 'newemail@example.com' WHERE name = '张三';</div>
+        </div>
+        <div class="sql-example">
+          <h3>4. DELETE</h3>
+          <div class="code-block">DELETE FROM users WHERE name = '张三';</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-im_detail">
+      <h2>商品信息查询</h2>
+      <div id="envAlert" class="badge ok">当前数据库环境: -</div>
+      <div class="card">
+        <div class="search-form">
+          <input id="skuInput" type="text" placeholder="请输入 10 位商品编号 (Item Number)" maxlength="10" inputmode="numeric" autocomplete="off">
+          <input id="zipcodeInput" type="text" placeholder="Zipcode（可选）" maxlength="10" autocomplete="off" style="flex:0 0 160px">
+          <button class="btn" id="btnSearch">查询</button>
+        </div>
+      </div>
+      <div id="skuResult" class="ii-scope"></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── 通用 Toast ──────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ─── 导航切换 ────────────────────────────────────────────────
+const views = ['home', 'timestamp', 'json', 'docs', 'database', 'im_detail'];
+function switchView(name) {
+  views.forEach(v => {
+    document.getElementById('view-' + v).classList.toggle('active', v === name);
+  });
+  document.querySelectorAll('#navGroup .nav-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === name);
+  });
+  localStorage.setItem('tools.lastView', name);
+}
+document.getElementById('navGroup').addEventListener('click', (e) => {
+  const btn = e.target.closest('.nav-item');
+  if (btn) switchView(btn.dataset.view);
+});
+
+// ─── 环境选择 ────────────────────────────────────────────────
+const ENV_LABELS = { dev: 'DEV', gqc: 'GQC', uat: 'UAT', prd: 'PRD' };
+let currentEnv = localStorage.getItem('tools.env') || 'gqc';
+
+function renderEnvButtons() {
+  const group = document.getElementById('envGroup');
+  group.innerHTML = '';
+  Object.keys(ENV_LABELS).forEach(env => {
+    const btn = document.createElement('button');
+    btn.className = 'env-btn' + (env === 'prd' ? ' prd' : '') + (env === currentEnv ? ' active' : '');
+    btn.textContent = ENV_LABELS[env];
+    btn.addEventListener('click', () => {
+      currentEnv = env;
+      localStorage.setItem('tools.env', env);
+      renderEnvButtons();
+      updateEnvAlert();
+      showToast('已切换到 ' + ENV_LABELS[env]);
+    });
+    group.appendChild(btn);
+  });
+}
+
+function updateEnvAlert() {
+  const el = document.getElementById('envAlert');
+  el.textContent = '当前数据库环境: ' + ENV_LABELS[currentEnv];
+  el.className = 'badge ' + (currentEnv === 'prd' ? 'err' : 'ok');
+}
+
+// ─── 时间戳转换 ──────────────────────────────────────────────
+function fmt(date) {
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  }).replace(/\//g, '-');
+}
+function tickTimestamp() {
+  const now = new Date();
+  document.getElementById('tsNow').textContent = Math.floor(now.getTime() / 1000);
+  document.getElementById('tsNowDate').textContent = fmt(now);
+}
+setInterval(tickTimestamp, 1000);
+tickTimestamp();
+
+document.getElementById('btnCopyTs').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('tsNow').textContent).then(() => showToast('复制成功'));
+});
+document.getElementById('btnCopyDt').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('tsNowDate').textContent).then(() => showToast('复制成功'));
+});
+document.getElementById('btnToDate').addEventListener('click', () => {
+  const v = document.getElementById('tsInput').value;
+  if (!v) return;
+  document.getElementById('tsToDateResult').textContent = fmt(new Date(Number(v) * 1000));
+});
+document.getElementById('btnToTs').addEventListener('click', () => {
+  const v = document.getElementById('dateInput').value;
+  if (!v) return;
+  const d = new Date(v);
+  if (isNaN(d.getTime())) { alert('请输入正确的日期格式！'); return; }
+  document.getElementById('dateToTsResult').textContent = Math.floor(d.getTime() / 1000);
+});
+
+// ─── JSON 工具 ───────────────────────────────────────────────
+function getJsonOutputWrap() { return document.getElementById('jsonOutputWrap'); }
+document.getElementById('btnFormat').addEventListener('click', () => {
+  const input = document.getElementById('jsonInput').value;
+  if (!input.trim()) return showToast('请输入JSON文本');
+  try {
+    document.getElementById('jsonOutput').value = JSON.stringify(JSON.parse(input), null, 2);
+    getJsonOutputWrap().style.display = 'block';
+  } catch (e) { showToast('无效的JSON格式：' + e.message); }
+});
+document.getElementById('btnCompress').addEventListener('click', () => {
+  const input = document.getElementById('jsonInput').value;
+  if (!input.trim()) return showToast('请输入JSON文本');
+  try {
+    document.getElementById('jsonOutput').value = JSON.stringify(JSON.parse(input));
+    getJsonOutputWrap().style.display = 'block';
+  } catch (e) { showToast('无效的JSON格式：' + e.message); }
+});
+document.getElementById('btnClear').addEventListener('click', () => {
+  document.getElementById('jsonInput').value = '';
+  document.getElementById('jsonOutput').value = '';
+  getJsonOutputWrap().style.display = 'none';
+});
+document.getElementById('btnCopyJson').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('jsonOutput').value).then(() => showToast('已复制到剪贴板'));
+});
+
+// ─── 商品信息查询（移植自 item-inspector）──────────────────────
+document.getElementById('btnSearch').addEventListener('click', doQuery);
+document.getElementById('skuInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') doQuery(); });
+document.getElementById('zipcodeInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') doQuery(); });
+
+async function doQuery() {
+  const itemNumber = document.getElementById('skuInput').value.trim();
+  const zipcode = document.getElementById('zipcodeInput').value.trim();
+  const wrap = document.getElementById('skuResult');
+  const btn = document.getElementById('btnSearch');
+
+  if (!itemNumber) return showToast('请输入商品编号');
+  if (!/^\d{10}$/.test(itemNumber)) return showToast('商品编号必须是 10 位数字');
+
+  const zipcodeHint = zipcode ? ` · zipcode: ${iiEsc(zipcode)}` : '';
+  wrap.innerHTML = `<div class="page-loading"><div class="spinner"></div><div>正在查询 ${ENV_LABELS[currentEnv]} · ${iiEsc(itemNumber)}${zipcodeHint} …</div></div>`;
+  btn.disabled = true;
+  btn.textContent = '查询中…';
+
+  try {
+    const res = await fetch('/api/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ env: currentEnv, item_number: itemNumber, zipcode: zipcode || '' }),
+    });
+    const data = await res.json();
+    if (data.error) {
+      wrap.innerHTML = `<div class="ii-error-alert">❌ ${iiEsc(data.error)}</div>`;
+    } else {
+      iiRenderResult(wrap, data);
+    }
+  } catch (e) {
+    wrap.innerHTML = `<div class="ii-error-alert">❌ 网络错误: ${iiEsc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '查询';
+  }
+}
+
+// ══ 主渲染 ══
+function iiRenderResult(wrap, data) {
+  const db = data.db || {};
+  const priceCache = data.redis_price_cache;
+  const itemCache  = data.redis_item_cache;
+  const p   = db.db_price || {};
+  const inv = db.inventory || {};
+  const pdp = db.pdp || {};
+  const now = Math.floor(Date.now() / 1000);
+
+  if (db.error) {
+    wrap.innerHTML = `<div class="ii-error-alert">❌ DB 查询失败: ${iiEsc(db.error)}</div>`;
+    return;
+  }
+
+  const envCls = data.env === 'prd' ? 'red' : 'blue';
+  let html = `
+    <div class="result-header">
+      <div class="result-item-num">#${iiEsc(db.item_number)}</div>
+      <div class="result-title">${iiEsc(db.item_title || '—')}</div>
+      <span class="ii-badge ii-badge-${envCls}">${data.env.toUpperCase()}</span>
+      <span class="result-time">${data.queried_at ? data.queried_at.replace('T',' ').slice(0,19) : ''}</span>
+    </div>
+    <div class="columns">
+  `;
+
+  // ── 列 1：基础信息 ──
+  html += `<div class="col-info">`;
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">📦</span>
+      <span class="ii-card-head-title">商品基础信息</span>
+      <span class="ii-badge ii-badge-blue">im_item</span>
+    </div>
+    <div class="kv-list">
+      ${iiKv('status',      iiStatusBadge(db.status))}
+      ${iiKv('seller_id',   db.seller_id  ?? '—')}
+      ${iiKv('site_code',   db.site_code  || '—')}
+      ${iiKv('goods_id',    db.goods_id   || '—')}
+      ${iiKv('brand_id',    db.brand_id   || '—')}
+      ${iiKv('market_price', iiPrice$(p.market_price))}
+    </div>
+  </div>`;
+
+  const promoActive = iiIsPromoActive(p, now);
+  const memberActive = iiIsMemberActive(p, now);
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">💰</span>
+      <span class="ii-card-head-title">全国价格</span>
+      <span class="ii-badge ii-badge-blue">im_item_price_setting</span>
+    </div>
+    <div class="kv-list">
+      ${iiKv('unit_price',       iiPrice$(p.unit_price))}
+      ${iiKv('promotion_price',  iiPrice$(p.promotion_price) + ' ' + (promoActive ? iiBadge('生效中','orange') : '') + (p.promote_start_date ? `<div class="kv-sub">${iiFmtTs(p.promote_start_date)} ~ ${iiFmtTs(p.promote_end_date)}</div>` : ''))}
+      ${iiKv('is_promotion',     p.is_promotion === 'Y' ? iiBadge('Y','green') : iiBadge('N','gray'))}
+      ${iiKv('seckill_price',    iiPrice$(p.seckill_price) + ' ' + iiSeckillBadge(p.seckill_status) + (p.seckill_start_time ? `<div class="kv-sub">${iiFmtTs(p.seckill_start_time)} ~ ${iiFmtTs(p.seckill_end_time)}</div>` : ''))}
+      ${iiKv('member_price',     iiPrice$(p.member_price)  + ' ' + (memberActive ? iiBadge('生效中','purple') : '') + (p.member_start_time ? `<div class="kv-sub">${iiFmtTs(p.member_start_time)} ~ ${iiFmtTs(p.member_end_time)}</div>` : ''))}
+      ${iiKv('giftcard_price',   iiPrice$(p.giftcard_price) + ' ' + (p.giftcard_status === 1 ? iiBadge('生效','blue') : ''))}
+      ${iiKv('limit_quantity',   p.limit_quantity != null ? (p.limit_quantity === 0 ? `0 <span style="color:var(--text-3);font-size:11px;">不限购</span>` : String(p.limit_quantity)) : '—')}
+    </div>
+  </div>`;
+
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">🏭</span>
+      <span class="ii-card-head-title">库存</span>
+      <span class="ii-badge ii-badge-blue">inventory_transaction</span>
+    </div>
+    <div class="inv-row">
+      <div class="inv-block">
+        <div class="inv-big ${inv.total_available_qty > 0 ? '' : 'warn'}">${inv.total_available_qty ?? '—'}</div>
+        <div class="inv-sub">available_qty</div>
+      </div>
+      <div class="inv-block">
+        <div class="inv-big warn">${inv.total_reserved_qty ?? '—'}</div>
+        <div class="inv-sub">reserved_qty</div>
+      </div>
+    </div>
+    ${iiRenderWarehouseTable(inv.by_warehouse)}
+  </div>`;
+  html += `</div>`; // end col-info
+
+  // ── 列 2：PDP 结论 ──
+  html += `<div class="col-pdp">`;
+  const salable = pdp.is_salable;
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">🖥️</span>
+      <span class="ii-card-head-title">PDP 结论</span>
+      ${salable ? '<span class="ii-badge ii-badge-green">✅ 可售</span>' : '<span class="ii-badge ii-badge-red">❌ 不可售</span>'}
+    </div>
+    <div class="pdp-hero">
+      <div class="pdp-price-block">
+        <div class="pdp-price-label">PDP 展示价格${pdp.area_used ? `（区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))}）` : '（全国）'}</div>
+        <div class="pdp-price-val">${pdp.pdp_price != null ? '$' + iiEsc(String(pdp.pdp_price)) : '—'}</div>
+        <div class="pdp-price-source">来源字段: ${iiEsc(pdp.pdp_price_source || '—')}${pdp.area_used ? ` <span style="color:var(--purple);font-weight:700;">[区域 rule_id=${iiEsc(String(pdp.area_rule_id||''))}]</span>` : ' <span style="color:var(--text-3);">[全国]</span>'}</div>
+      </div>
+      <div class="pdp-salable-block">
+        <div class="pdp-salable-icon">${salable ? '✅' : '❌'}</div>
+        <div class="pdp-salable-text ${salable ? 'green' : 'red'}">${salable ? '可售' : '不可售'}</div>
+      </div>
+    </div>
+    ${pdp.unsalable_reason ? `<div class="pdp-reason">⚠️ ${iiEsc(pdp.unsalable_reason)}</div>` : ''}
+    <div class="pdp-extra">
+      <div class="pdp-extra-cell">
+        <div class="pdp-extra-label">item_type</div>
+        <div class="pdp-extra-val">${pdp.item_type ?? '—'} <span style="color:var(--text-3);font-size:11px;font-weight:400;">${iiEsc(pdp.item_type_label || '')}</span></div>
+      </div>
+      <div class="pdp-extra-cell">
+        <div class="pdp-extra-label">促销</div>
+        <div class="pdp-extra-val">${pdp.promo_active ? iiBadge('生效中','orange') : iiBadge('未生效','gray')}</div>
+      </div>
+      <div class="pdp-extra-cell">
+        <div class="pdp-extra-label">秒杀</div>
+        <div class="pdp-extra-val">${pdp.seckill_active ? iiBadge('进行中','red') : iiBadge('未生效','gray')}</div>
+      </div>
+      <div class="pdp-extra-cell">
+        <div class="pdp-extra-label">会员价</div>
+        <div class="pdp-extra-val">${pdp.member_active
+          ? iiBadge('$' + iiEsc(String(pdp.member_price_display ?? '')) + ' 生效中', 'purple')
+          : (pdp.member_price_display ? `$${iiEsc(String(pdp.member_price_display))} <span style="color:var(--text-3);font-size:11px;">未生效</span>` : iiBadge('无','gray'))}</div>
+      </div>
+    </div>
+  </div>`;
+
+  if (db.local_prices && db.local_prices.length > 0) {
+    html += `<div class="ii-card">
+      <div class="ii-card-head">
+        <span class="ii-card-head-icon">🗺️</span>
+        <span class="ii-card-head-title">区域价格</span>
+        <span class="ii-badge ii-badge-blue">im_item_area_price_setting</span>
+      </div>
+      <div style="overflow-x:auto;">${iiRenderLocalPriceTable(db.local_prices, now)}</div>
+    </div>`;
+  }
+
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">⚡</span>
+      <span class="ii-card-head-title">Redis 价格缓存</span>
+      <span class="ii-badge ii-badge-orange">promotion:price:${iiEsc(db.item_number)}</span>
+      ${iiCacheStatusBadge(priceCache)}
+    </div>
+    ${iiRenderRedisPriceCache(priceCache, db.local_prices)}
+  </div>`;
+  html += `</div>`; // end col-pdp
+
+  // ── 列 3：PDP 逻辑推导链 ──
+  html += `<div class="col-logic">`;
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">🔗</span>
+      <span class="ii-card-head-title">PDP 价格推导链</span>
+      <span class="ii-card-head-sub">ItemController.php 逻辑</span>
+    </div>
+    <div class="logic-chain">
+      ${iiRenderPdpLogicChain(db, p, pdp, inv, now)}
+    </div>
+  </div>`;
+
+  html += `<div class="ii-card">
+    <div class="ii-card-head">
+      <span class="ii-card-head-icon">💾</span>
+      <span class="ii-card-head-title">Redis 商品缓存</span>
+      <span class="ii-badge ii-badge-orange">IM_ITEMS:${iiEsc(db.item_number)}:zh_CN</span>
+      ${iiCacheStatusBadge(itemCache)}
+    </div>
+    <details class="collapsible">
+      <summary>展开查看缓存关键字段</summary>
+      <div class="detail-body">${iiRenderItemCachePreview(itemCache)}</div>
+    </details>
+  </div>`;
+  html += `</div>`; // end col-logic
+  html += `</div>`; // end columns
+
+  wrap.innerHTML = html;
+}
+
+// ══ PDP 逻辑推导链 ══
+function iiRenderPdpLogicChain(db, p, pdp, inv, now) {
+  const steps = [];
+  const status = db.status;
+  const ep = pdp.effective_price || p;
+
+  const statusOk = status === 'A';
+  steps.push({
+    dot: statusOk ? 'pass' : 'fail',
+    label: '① 商品状态检查',
+    data: `<span class="key">im_item.status</span> = <span class="val ${statusOk ? 'ok' : 'hit'}">"${iiEsc(status || '?')}"</span>\nH=隐藏(404) · D/R=下架(item_type=5) · A=正常`,
+    conclusion: statusOk
+      ? { cls: 'ok', text: '✓ 状态 A，进入价格判断' }
+      : status === 'H'
+        ? { cls: 'hit', text: '✗ 状态 H，页面返回 404' }
+        : { cls: 'hit', text: `✗ 状态 ${iiEsc(status)}，item_type = 5（下架）` },
+  });
+
+  if (status === 'H') {
+    steps.push({ dot: 'fail', label: '⛔ 后续步骤跳过（商品已隐藏）', data: '', conclusion: { cls: 'skip', text: '' } });
+    return steps.map(iiRenderStep).join('');
+  }
+
+  const areaUsed = pdp.area_used;
+  if (areaUsed) {
+    steps.push({
+      dot: 'hit',
+      label: '② 区域价格覆盖 (setAreaPrice)',
+      data: `<span class="key">zipcode</span> 命中 rule_id = <span class="val hit">${iiEsc(String(pdp.area_rule_id||''))}</span>  <span style="color:var(--text-3);">${iiEsc(pdp.area_rule_name||'')}</span>\n区域 unit_price     = <span class="val">${ep.unit_price != null ? '$'+iiEsc(String(ep.unit_price)) : '—'}</span>\n区域 is_promotion   = <span class="val ${ep.is_promotion==='Y'?'hit':'muted'}">${iiEsc(ep.is_promotion||'N')}</span>  (时间校验后)\n区域 seckill_status = <span class="val ${ep.seckill_status===2?'hit':'muted'}">${ep.seckill_status ?? 0}</span>  (时间校验后)\n区域 seckill_price  = <span class="val">${ep.seckill_price != null ? '$'+iiEsc(String(ep.seckill_price)) : '—'}</span>\n区域 member_price   = <span class="val">${ep.member_price != null ? '$'+iiEsc(String(ep.member_price)) : '—'}</span>`,
+      conclusion: { cls: 'hit', text: `✓ 已用区域价覆盖，后续判断均以区域值为准` },
+    });
+  } else {
+    steps.push({
+      dot: 'fail',
+      label: '② 区域价格覆盖 (setAreaPrice)',
+      data: !db.zipcode_query
+        ? `未传入 zipcode，使用全国价格`
+        : db.zipcode_query.not_found
+          ? `zipcode <span class="val">${iiEsc(db.zipcode_query.zipcode)}</span> 未命中任何区域规则`
+          : !db.zipcode_query.area_price_found
+            ? `zipcode 命中 rule_id=${iiEsc(String(db.zipcode_query.rule_id||''))}，但该商品无对应区域价格配置`
+            : `使用全国价格`,
+      conclusion: { cls: 'skip', text: '↷ 无区域覆盖，使用全国价格' },
+    });
+  }
+
+  const isPromo = ep.is_promotion === 'Y';
+  const promoEndTs = ep.promote_end_date;
+  steps.push({
+    dot: isPromo ? 'hit' : 'fail',
+    label: '③ 促销标识 (is_promotion)',
+    data: `<span class="key">is_promotion</span>    = <span class="val ${isPromo ? 'hit' : 'muted'}">"${iiEsc(ep.is_promotion || 'N')}"</span>  (已完成时间校验)\n<span class="key">promotion_price</span> = <span class="val">${ep.promotion_price != null ? '$' + iiEsc(String(ep.promotion_price)) : '—'}</span>\n<span class="key">promote_start_date</span> = <span class="val">${ep.promote_start_date ? iiFmtTs(ep.promote_start_date) : '—'}</span>\n<span class="key">promote_end_date</span>   = <span class="val">${ep.promote_end_date ? iiFmtTs(ep.promote_end_date) : '—'}</span>`,
+    conclusion: !isPromo
+      ? { cls: 'skip', text: '↷ 非促销（或时间未到/已过期），跳过此步' }
+      : { cls: 'hit', text: `✓ 促销生效中 → 初步 item_type = 2` },
+  });
+
+  const sk = ep.seckill_status;
+  const skActive = sk === 2 || sk === 3;
+  steps.push({
+    dot: sk && sk !== 0 && sk !== 4 ? 'hit' : 'fail',
+    label: '④ 秒杀状态 (seckill_status)',
+    data: `<span class="key">seckill_status</span> = <span class="val ${skActive ? 'hit' : 'muted'}">${sk ?? 'null'}</span>  (0=无 1=预热 2=进行中 3=已抢光 4=结束，时间校验后)\n<span class="key">seckill_price</span>  = <span class="val">${ep.seckill_price != null ? '$' + iiEsc(String(ep.seckill_price)) : '—'}</span>\n<span class="key">seckill_start_time</span> = <span class="val">${ep.seckill_start_time ? iiFmtTs(ep.seckill_start_time) : '—'}</span>\n<span class="key">seckill_end_time</span>   = <span class="val">${ep.seckill_end_time ? iiFmtTs(ep.seckill_end_time) : '—'}</span>`,
+    conclusion: (!sk || sk === 0 || sk === 4)
+      ? { cls: 'skip', text: '↷ 无进行中秒杀，跳过此步' }
+      : sk === 1
+        ? { cls: 'warn', text: '⚠ 秒杀预热中（status=1）· 若同时 is_promotion=Y → 按促销处理，否则按普通' }
+        : skActive
+          ? { cls: 'hit', text: `✓ 秒杀 ${sk === 2 ? '进行中' : '已抢光'} → item_type = 3，价格取 seckill_price` }
+          : { cls: 'skip', text: '↷ 秒杀已结束' },
+  });
+
+  const endTs = ep.promote_end_date;
+  const remainSec = endTs ? endTs - now : null;
+  const over72 = remainSec != null && remainSec > 3 * 24 * 3600;
+  steps.push({
+    dot: isPromo ? (over72 ? 'warn' : 'pass') : 'fail',
+    label: '⑤ 促销 72h 降级规则',
+    data: `<span class="key">promote_end_date</span> = <span class="val">${endTs ? iiFmtTs(endTs) : '—'}</span>\n<span class="key">距结束</span> = <span class="val ${over72 ? 'hit' : 'ok'}">${remainSec != null ? iiFmtDuration(remainSec) : '—'}</span>\n规则: 促销剩余 > 72h → 不显示倒计时，item_type 降级为普通价展示`,
+    conclusion: !isPromo
+      ? { cls: 'skip', text: '↷ 非促销类型，此规则不适用' }
+      : over72
+        ? { cls: 'warn', text: `⚠ 剩余 ${iiFmtDuration(remainSec)} > 72h → item_type 从 2 降级为 1（直降价，无倒计时）` }
+        : { cls: 'ok',   text: `✓ 剩余 ${remainSec != null ? iiFmtDuration(remainSec) : '—'} ≤ 72h → 保持促销，显示倒计时` },
+  });
+
+  const areaInfoLine = pdp.area_used
+    ? '<span class="key">价格来源</span> = <span class="val hit">区域覆盖 rule_id=' + iiEsc(String(pdp.area_rule_id||'')) + ' · ' + iiEsc(pdp.area_rule_name||'') + '</span>\n'
+    : '<span class="key">价格来源</span> = <span class="val ok">全国价（无 zipcode 或未命中区域）</span>\n';
+  const priceLabel = pdp.area_used ? `【区域价 rule_id=${iiEsc(String(pdp.area_rule_id||''))}】` : '【全国价】';
+  steps.push({
+    dot: 'active',
+    label: '⑥ 最终 item_type 和价格选取',
+    data: areaInfoLine +
+      '<span class="key">item_type</span>    = <span class="val hit">' + (pdp.item_type ?? '?') + '</span>  (' + iiEsc(pdp.item_type_label || '') + ')\n' +
+      '<span class="key">price_source</span>  = <span class="val hit">' + iiEsc(pdp.pdp_price_source || '—') + '</span>\n' +
+      '<span class="key">unit_price</span>    = <span class="val">$' + (ep.unit_price ?? '—') + '</span>\n' +
+      '<span class="key">promo_price</span>   = <span class="val ' + (ep.is_promotion==='Y'?'hit':'muted') + '">$' + (ep.promotion_price ?? '—') + '</span>  is_promotion=' + (ep.is_promotion||'N') + '\n' +
+      '<span class="key">seckill_price</span> = <span class="val ' + (sk===2?'hit':'muted') + '">$' + (ep.seckill_price ?? '—') + '</span>  status=' + (ep.seckill_status??0) + '\n' +
+      '<span class="key">pdp_price</span>     = <span class="val hit">' + (pdp.pdp_price != null ? '$' + iiEsc(String(pdp.pdp_price)) : '—') + '</span>\n' +
+      '<span class="key">market_price</span>  = <span class="val">' + (p.market_price != null ? '$' + iiEsc(String(p.market_price)) : '—') + '</span>  (划线价，始终取全国)',
+    conclusion: { cls: 'hit', text: '→ 页面展示 ' + (pdp.pdp_price != null ? '$' + iiEsc(String(pdp.pdp_price)) : '—') + '（' + iiEsc(pdp.pdp_price_source || '') + '）' + priceLabel },
+  });
+
+  const listed = status === 'A';
+  const inStock = (inv.total_available_qty || 0) > 0;
+  steps.push({
+    dot: (listed && inStock) ? 'pass' : 'fail',
+    label: '⑦ 可售判断',
+    data: `<span class="key">status</span>         = <span class="val ${listed ? 'ok' : 'hit'}">"${iiEsc(status || '?')}"</span>  ${listed ? '✓ 已上架' : '✗ 非上架'}\n<span class="key">available_qty</span>  = <span class="val ${inStock ? 'ok' : 'hit'}">${inv.total_available_qty ?? 0}</span>  ${inStock ? '✓ 有货' : '✗ 无库存'}\n规则: status=A AND available_qty>0 → 可售`,
+    conclusion: (listed && inStock)
+      ? { cls: 'ok',  text: '✓ 可售：状态正常 + 有库存' }
+      : !listed
+        ? { cls: 'hit', text: `✗ 不可售：商品状态 ${iiEsc(status)} 非 A` }
+        : { cls: 'hit', text: '✗ 不可售：available_qty = 0，无库存' },
+  });
+
+  const memberActive = pdp.member_active;
+  const giftcardActive = pdp.giftcard_active;
+  steps.push({
+    dot: (memberActive || giftcardActive) ? 'active' : 'fail',
+    label: '⑧ 附加价格（会员价 / 礼卡价）',
+    data: `<span class="key">member_status</span>  = <span class="val ${memberActive ? 'hit' : 'muted'}">${ep.member_status ?? 0}</span>\n<span class="key">member_price</span>   = <span class="val">${ep.member_price != null ? '$' + iiEsc(String(ep.member_price)) : '—'}</span>  ${memberActive ? iiBadge('当前生效','purple') : (sk===2 ? iiBadge('秒杀中已屏蔽','gray') : '')}\n<span class="key">giftcard_status</span>= <span class="val ${giftcardActive ? 'hit' : 'muted'}">${ep.giftcard_status ?? 0}</span>\n<span class="key">giftcard_price</span> = <span class="val">${ep.giftcard_price != null ? '$' + iiEsc(String(ep.giftcard_price)) : '—'}</span>  ${giftcardActive ? iiBadge('当前生效','blue') : ''}\n${sk===2 ? '<span style="color:var(--orange);font-size:11px;">⚠ 秒杀进行中，会员价被后端强制清除</span>' : ''}`,
+    conclusion: memberActive
+      ? { cls: 'ok', text: `会员价 $${iiEsc(String(ep.member_price))} 当前生效，礼卡用户另行展示` }
+      : giftcardActive
+        ? { cls: 'ok', text: `礼卡专享价 $${iiEsc(String(ep.giftcard_price))} 当前生效` }
+        : { cls: 'skip', text: '↷ 无生效中的会员价/礼卡价' },
+  });
+
+  return steps.map(iiRenderStep).join('');
+}
+
+function iiRenderStep(s) {
+  return `
+    <div class="logic-step">
+      <div class="step-dot ${s.dot}">${s.dot === 'pass' ? '✓' : s.dot === 'fail' ? '–' : s.dot === 'hit' ? '!' : s.dot === 'active' ? '→' : '⚠'}</div>
+      <div class="step-body">
+        <div class="step-title">${s.label}</div>
+        ${s.data ? `<div class="step-data">${s.data}</div>` : ''}
+        ${s.conclusion && s.conclusion.text ? `<div class="step-conclusion ${s.conclusion.cls}">${s.conclusion.text}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+// ══ 子渲染函数 ══
+function iiRenderWarehouseTable(rows) {
+  if (!rows || !rows.length) return '';
+  if (rows[0] && rows[0].error) return `<div style="padding:10px 16px;color:var(--red);font-size:12px;">库存查询失败: ${iiEsc(rows[0].error)}</div>`;
+  return `<div style="overflow-x:auto;">
+    <table class="mini-table">
+      <thead><tr><th>仓库</th><th>available</th><th>reserved</th><th>accounting</th></tr></thead>
+      <tbody>${rows.map(r => `<tr>
+        <td style="font-family:var(--mono);font-size:11px;">${iiEsc(r.warehouse_number || '')}</td>
+        <td class="${(r.available_qty||0) > 0 ? 'price' : 'muted'}">${r.available_qty ?? '—'}</td>
+        <td style="color:var(--orange);">${r.reserved_qty ?? '—'}</td>
+        <td class="muted">${r.accounting_qty ?? '—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function iiRenderLocalPriceTable(rows, now) {
+  if (!rows || !rows.length) return '<div class="empty-hint">无区域价格配置</div>';
+  return `<table class="mini-table">
+    <thead><tr><th>rule</th><th>unit</th><th>促销价</th><th>秒杀价</th><th>会员价</th><th>礼卡价</th></tr></thead>
+    <tbody>${rows.map(r => {
+      const promoOn = r.is_promotion === 'Y' && r.promote_start_date && r.promote_end_date
+        && now >= r.promote_start_date && now <= r.promote_end_date && Number(r.promotion_price) > 0;
+      const skStatus = r.seckill_status;
+      const skOn = skStatus === 2 && r.seckill_start_time && r.seckill_end_time && now >= r.seckill_start_time && now <= r.seckill_end_time;
+      const skAny = skStatus && skStatus !== 0 && skStatus !== 4;
+      const memberOn = r.member_status === 1 && r.member_start_time && r.member_end_time && now >= r.member_start_time && now <= r.member_end_time;
+      return `<tr>
+        <td style="font-family:var(--mono);font-size:11px;">${iiEsc(String(r.rule_id||''))}<br><span style="color:var(--text-3);font-size:10px;">${iiEsc(r.rule_name||'—')}</span></td>
+        <td class="price">${r.unit_price != null ? '$'+r.unit_price : '—'}</td>
+        <td class="${promoOn ? 'price' : 'muted'}">${r.promotion_price != null ? '$'+r.promotion_price : '—'}${promoOn ? ' ✓' : ''}</td>
+        <td class="${skOn ? 'price' : (skAny ? '' : 'muted')}">${r.seckill_price != null ? '$'+r.seckill_price : '—'}${skOn ? ' ✓' : (skAny ? ` <span style="color:var(--text-3);font-size:10px;">(s=${skStatus})</span>` : '')}</td>
+        <td class="${memberOn ? '' : 'muted'}" style="${memberOn ? 'color:var(--purple);' : ''}">${r.member_price != null ? '$'+r.member_price : '—'}${memberOn ? ' ✓' : ''}</td>
+        <td class="muted">${r.giftcard_price != null ? '$'+r.giftcard_price : '—'}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function iiRenderRedisPriceCache(cache, localPrices) {
+  if (!cache) return '<div class="empty-hint">缓存未命中</div>';
+  if (cache.error) return `<div style="padding:10px 16px;color:var(--red);font-size:12px;">${iiEsc(cache.error)}</div>`;
+  const entries = Object.entries(cache);
+  if (!entries.length) return '<div class="empty-hint">缓存为空</div>';
+  const ruleMap = {};
+  if (localPrices) localPrices.forEach(r => { ruleMap[String(r.rule_id)] = r.rule_name || ''; });
+  return `<div class="redis-fields">${entries.map(([field, rawJson]) => {
+    const ruleName = field === '0' ? '全国' : (ruleMap[field] || '');
+    let segs = [];
+    try { segs = JSON.parse(rawJson); } catch {}
+    if (!Array.isArray(segs)) { try { const o = JSON.parse(rawJson); segs = o.priceSegments || o.segments || [o]; } catch {} }
+    const now2 = Math.floor(Date.now()/1000);
+    return `<div class="redis-field">
+      <div class="redis-field-name">field: ${iiEsc(field)} <span>rule_id=${iiEsc(field)}${ruleName ? ' · '+iiEsc(ruleName) : ''}</span></div>
+      ${segs.length === 0 ? '<div style="font-size:11px;color:var(--text-3);padding:2px 0;">无段数据</div>' : segs.map(seg => {
+        const type = String(seg.priceType || seg.price_type || seg.type || '');
+        const typeMap = {'1':'promotion','2':'seckill','3':'member','4':'giftcard','promotion':'promotion','seckill':'seckill','member':'member','giftcard':'giftcard'};
+        const typeCls = typeMap[type] || '';
+        const typeLabel = {promotion:'促销',seckill:'秒杀',member:'会员价',giftcard:'礼卡'}[typeCls] || type || '?';
+        const typeColor = {promotion:'var(--orange)',seckill:'var(--red)',member:'var(--purple)',giftcard:'var(--blue)'}[typeCls] || 'var(--text-2)';
+        const price = seg.price || seg.promotionPrice || seg.seckillPrice || seg.memberPrice || seg.giftcardPrice;
+        const start = seg.startTime || seg.start_time;
+        const end = seg.endTime || seg.end_time;
+        const active = start && end && now2 >= start && now2 <= end;
+        return `<div class="redis-seg ${active ? 'active' : ''}">
+          <span class="redis-seg-type" style="color:${typeColor};">${typeLabel}</span>
+          ${price != null ? `<span class="redis-seg-price">$${iiEsc(String(price))}</span>` : ''}
+          ${start ? `<span class="redis-seg-time">${iiFmtTs(start)} ~ ${iiFmtTs(end)}</span>` : ''}
+          ${active ? '<span class="redis-seg-act">▶ 生效</span>' : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function iiRenderItemCachePreview(cache) {
+  if (!cache) return '<div class="empty-hint">缓存未命中</div>';
+  if (cache.error) return `<div style="padding:10px 16px;color:var(--red);font-size:12px;">${iiEsc(cache.error)}</div>`;
+  const keyFields = ['item_number','item_title','status','unit_price','market_price','promotion_price','is_promotion','seckill_status','seckill_price','member_price','giftcard_price','limit_quantity','is_instock','act_type','goods_number','seller_id','seller_type','brand_id','category_id'];
+  const preview = {};
+  const src = (typeof cache === 'object' && cache.itemInfo) ? cache.itemInfo : cache;
+  keyFields.forEach(k => { if (src[k] !== undefined) preview[k] = src[k]; });
+  const str = Object.keys(preview).length ? JSON.stringify(preview, null, 2) : JSON.stringify(cache, null, 2).substring(0, 2000);
+  return `<div class="ii-code-block">${iiEsc(str)}</div>`;
+}
+
+// ══ 工具函数 ══
+function iiEsc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function iiPrice$(v) {
+  if (v == null) return `<span style="color:var(--text-3);font-style:italic;">—</span>`;
+  return `<span style="color:var(--red);font-weight:700;">$${iiEsc(String(v))}</span>`;
+}
+function iiBadge(text, color) {
+  const map = { green: 'ii-badge-green', red: 'ii-badge-red', orange: 'ii-badge-orange', blue: 'ii-badge-blue', purple: 'ii-badge-purple', gray: 'ii-badge-gray', yellow: 'ii-badge-yellow' };
+  return `<span class="ii-badge ${map[color] || 'ii-badge-gray'}">${iiEsc(String(text))}</span>`;
+}
+function iiKv(key, valHtml) {
+  return `<div class="kv-row"><div class="kv-key">${iiEsc(key)}</div><div class="kv-val">${valHtml}</div></div>`;
+}
+function iiStatusBadge(s) {
+  const map = { A: ['green','上架'], D: ['red','下架'], H: ['orange','隐藏'], R: ['red','删除'] };
+  const [color, label] = map[s] || ['gray', s || '?'];
+  return iiBadge(`${iiEsc(s || '?')} ${label}`, color);
+}
+function iiSeckillBadge(s) {
+  if (s == null || s === 0) return '';
+  const map = { 1: ['yellow','预热'], 2: ['red','进行中'], 3: ['gray','已抢光'], 4: ['gray','已结束'] };
+  const [c, l] = map[s] || ['gray', String(s)];
+  return iiBadge(l, c);
+}
+function iiCacheStatusBadge(cache) {
+  if (!cache) return '<span class="ii-badge ii-badge-gray">未命中</span>';
+  if (cache.error) return '<span class="ii-badge ii-badge-red">查询失败</span>';
+  return '<span class="ii-badge ii-badge-green">已命中</span>';
+}
+function iiFmtTs(ts) {
+  if (!ts) return '—';
+  return new Date(ts * 1000).toLocaleString('zh-CN', { timeZone: 'America/Los_Angeles', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+}
+function iiFmtDuration(sec) {
+  if (sec <= 0) return '已过期';
+  const h = Math.floor(sec / 3600);
+  const d = Math.floor(h / 24);
+  if (d > 0) return `${d}天${h % 24}小时`;
+  return `${h}小时${Math.floor((sec % 3600) / 60)}分`;
+}
+function iiIsPromoActive(p, now) {
+  return p.is_promotion === 'Y' && p.promote_start_date && p.promote_end_date && now >= p.promote_start_date && now <= p.promote_end_date;
+}
+function iiIsMemberActive(p, now) {
+  return p.member_status === 1 && p.member_price != null && p.member_start_time && p.member_end_time && now >= p.member_start_time && now <= p.member_end_time;
+}
+
+// ─── 初始化 ──────────────────────────────────────────────────
+renderEnvButtons();
+updateEnvAlert();
+switchView(localStorage.getItem('tools.lastView') || 'home');
+</script>
+</body>
+</html>

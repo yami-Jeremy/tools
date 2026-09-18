@@ -1,29 +1,20 @@
 {
   "name": "tools-collection",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "main": "server.js",
+  "description": "工具集合（单 Node 进程：静态页面 + API）",
+  "main": "server/server.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "start": "node server.js",
-    "server": "nodemon server.js",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\""
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "element-plus": "^2.10.6",
     "express": "^4.18.2",
-    "mysql2": "^3.6.0",
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.4"
+    "mysql2": "^3.6.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.2.3",
-    "concurrently": "^8.2.0",
-    "nodemon": "^3.0.1",
-    "vite": "^4.4.9"
+    "nodemon": "^3.0.1"
   }
 }

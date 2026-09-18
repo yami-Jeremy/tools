@@ -1,5 +1,7 @@
 # 工具集合项目
 
+单 Node 进程：原生 HTML/JS 静态页面（`public/index.html`）+ Express API（`server/server.js`），无需构建步骤。
+
 ## 启动项目
 
 ### 1. 安装依赖
@@ -7,27 +9,14 @@
 npm install
 ```
 
-### 2. 启动项目
+### 2. 配置环境变量
+在项目根目录 `.env` 中配置 `DEV/UAT/GQC/PRD_DB_HOST/PORT/USER/PASSWORD/NAME`。
 
-#### 同时启动前后端（推荐）
-```bash
-npm run dev:full
-```
-
-#### 分别启动前后端
-```bash
-# 启动后端服务器（端口3000）
-npm run server
-
-# 启动前端开发服务器（端口5173）
-npm run dev
-```
-
-#### 仅启动后端
+### 3. 启动
 ```bash
 npm start
 ```
 
-### 3. 访问地址
-- 前端页面: http://localhost:8999
-- 后端API: http://localhost:3000
+访问 http://localhost:3000
+
+开发时可用 `npm run dev`（nodemon 自动重启，修改 `public/index.html` 直接刷新浏览器即可，无需重启）。
